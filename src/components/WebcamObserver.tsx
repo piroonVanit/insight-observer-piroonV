@@ -12,6 +12,8 @@ interface WebcamObserverProps {
   onStartAnalysis: () => void;
   isAnalyzingVisual: boolean;
   hasVisualEval: boolean;
+  mediaStream?: MediaStream | null;
+  setMediaStream?: (stream: MediaStream | null) => void;
 }
 
 export const WebcamObserver: React.FC<WebcamObserverProps> = ({
@@ -24,6 +26,8 @@ export const WebcamObserver: React.FC<WebcamObserverProps> = ({
   onStartAnalysis,
   isAnalyzingVisual,
   hasVisualEval,
+  mediaStream,
+  setMediaStream,
 }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -32,6 +36,13 @@ export const WebcamObserver: React.FC<WebcamObserverProps> = ({
   const [cameraError, setCameraError] = useState<string | null>(null);
   const [useSimulatedCam, setUseSimulatedCam] = useState<boolean>(false);
 
+  // Sync videoRef with mediaStream if passed
+  useEffect(() => {
+    if (videoRef.current && mediaStream) {
+      videoRef.current.srcObject = mediaStream;
+    }
+  }, [mediaStream]);
+
   // Initialize webcam
   const startCamera = async () => {
     setCameraError(null);
@@ -39,6 +50,9 @@ export const WebcamObserver: React.FC<WebcamObserverProps> = ({
       const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } });
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
+      }
+      if (setMediaStream) {
+        setMediaStream(stream);
       }
       setStreamActive(true);
       setUseSimulatedCam(false);
@@ -55,6 +69,9 @@ export const WebcamObserver: React.FC<WebcamObserverProps> = ({
       const stream = videoRef.current.srcObject as MediaStream;
       stream.getTracks().forEach((track) => track.stop());
       videoRef.current.srcObject = null;
+    }
+    if (setMediaStream) {
+      setMediaStream(null);
     }
     setStreamActive(false);
   };

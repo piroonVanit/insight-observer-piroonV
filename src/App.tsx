@@ -11,11 +11,17 @@ import { Sparkles, MessageSquare, FileText, CheckCircle2 } from 'lucide-react';
 
 export default function App() {
   const [youtubeUrl, setYoutubeUrl] = useState<string>('https://www.youtube.com/watch?v=Mzw2ttJD2qQ');
+  const [loadedVideoUrl, setLoadedVideoUrl] = useState<string>('https://www.youtube.com/watch?v=Mzw2ttJD2qQ');
   const [metadata, setMetadata] = useState<VideoMetadata | null>(null);
   const [isLoadingMetadata, setIsLoadingMetadata] = useState<boolean>(false);
 
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [currentTimeSeconds, setCurrentTimeSeconds] = useState<number>(0);
+  const [mediaStream, setMediaStream] = useState<MediaStream | null>(null);
+
+  const handleCurrentTimeChange = useCallback((timeInSeconds: number) => {
+    setCurrentTimeSeconds(timeInSeconds);
+  }, []);
   const [frames, setFrames] = useState<FrameSample[]>([]);
 
   const [visualEvaluationText, setVisualEvaluationText] = useState<string | null>(null);
@@ -32,6 +38,7 @@ export default function App() {
 
   // Fetch YouTube Metadata
   const fetchMetadata = useCallback(async (urlToFetch: string) => {
+    setLoadedVideoUrl(urlToFetch);
     setIsLoadingMetadata(true);
     try {
       const res = await fetch('/api/youtube-metadata', {
@@ -49,11 +56,6 @@ export default function App() {
       setIsLoadingMetadata(false);
     }
   }, []);
-
-  // Automatically fetch metadata on load
-  useEffect(() => {
-    fetchMetadata(youtubeUrl);
-  }, [fetchMetadata]);
 
   const handleLoadTestVideo = () => {
     const testUrl = 'https://www.youtube.com/watch?v=Mzw2ttJD2qQ';
@@ -243,11 +245,13 @@ export default function App() {
               <VideoPlayer
                 url={youtubeUrl}
                 setUrl={setYoutubeUrl}
+                loadedVideoUrl={loadedVideoUrl}
                 metadata={metadata}
                 isLoadingMetadata={isLoadingMetadata}
                 onFetchMetadata={fetchMetadata}
-                onCurrentTimeChange={setCurrentTimeSeconds}
+                onCurrentTimeChange={handleCurrentTimeChange}
                 isPlaying={isPlaying}
+                setIsPlaying={setIsPlaying}
               />
 
               {/* Right: Webcam Observer */}
@@ -261,6 +265,8 @@ export default function App() {
                 onStartAnalysis={handleVisualEvaluation}
                 isAnalyzingVisual={isAnalyzingVisual}
                 hasVisualEval={!!visualEvaluationText}
+                mediaStream={mediaStream}
+                setMediaStream={setMediaStream}
               />
             </div>
 

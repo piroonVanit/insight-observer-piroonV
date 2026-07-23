@@ -1,25 +1,29 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Youtube, Clock, FileText, ChevronDown, ChevronUp, Loader2, Sparkles } from 'lucide-react';
+import { Youtube, Clock, FileText, ChevronDown, ChevronUp, Loader2, Sparkles, Video } from 'lucide-react';
 import { VideoMetadata } from '../types';
 
 interface VideoPlayerProps {
   url: string;
   setUrl: (url: string) => void;
+  loadedVideoUrl?: string;
   metadata: VideoMetadata | null;
   isLoadingMetadata: boolean;
   onFetchMetadata: (inputUrl: string) => void;
   onCurrentTimeChange: (timeInSeconds: number) => void;
   isPlaying: boolean;
+  setIsPlaying?: (playing: boolean) => void;
 }
 
 export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   url,
   setUrl,
+  loadedVideoUrl,
   metadata,
   isLoadingMetadata,
   onFetchMetadata,
   onCurrentTimeChange,
   isPlaying,
+  setIsPlaying,
 }) => {
   const [showTranscript, setShowTranscript] = useState<boolean>(false);
   const [playbackSeconds, setPlaybackSeconds] = useState<number>(0);
@@ -31,7 +35,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     return match ? match[1] : 'Mzw2ttJD2qQ';
   };
 
-  const videoId = extractVideoId(url);
+  const videoId = extractVideoId(loadedVideoUrl || url);
 
   // Sync YouTube iframe playback command with isPlaying state
   useEffect(() => {
@@ -44,6 +48,33 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     }
   }, [isPlaying]);
 
+  // Listen to YouTube iframe events (play/pause triggered directly inside iframe)
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      try {
+        let data = event.data;
+        if (typeof data === 'string') {
+          data = JSON.parse(data);
+        }
+        if (data && typeof data === 'object') {
+          // Check playerState from infoDelivery or onStateChange events
+          const state = data.info?.playerState ?? data.playerState;
+          if (state === 1 && setIsPlaying) {
+            // 1 = PLAYING
+            setIsPlaying(true);
+          } else if ((state === 2 || state === 0) && setIsPlaying) {
+            // 2 = PAUSED, 0 = ENDED
+            setIsPlaying(false);
+          }
+        }
+      } catch (e) {
+        // Non-JSON message
+      }
+    };
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [setIsPlaying]);
+
   // Playback timer simulation for syncing webcam reaction sampling
   useEffect(() => {
     let interval: any = null;
@@ -51,20 +82,28 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
       interval = setInterval(() => {
         setPlaybackSeconds((prev) => {
           const maxDur = metadata?.duration_seconds || 135;
-          const next = prev >= maxDur ? 0 : prev + 1;
-          onCurrentTimeChange(next);
-          return next;
+          return prev >= maxDur ? 0 : prev + 1;
         });
       }, 1000);
     }
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isPlaying, metadata, onCurrentTimeChange]);
+  }, [isPlaying, metadata]);
+
+  useEffect(() => {
+    onCurrentTimeChange(playbackSeconds);
+  }, [playbackSeconds, onCurrentTimeChange]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onFetchMetadata(url);
+  };
+
+  const togglePlayback = () => {
+    if (setIsPlaying) {
+      setIsPlaying(!isPlaying);
+    }
   };
 
   const formatSeconds = (sec: number) => {
@@ -116,17 +155,40 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
           ref={iframeRef}
           id="youtube-iframe"
           title={metadata?.title || 'YouTube Video'}
-          src={`https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=${isPlaying ? 1 : 0}&rel=0`}
+          src={`https://www.youtube.com/embed/${videoId}?enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}&autoplay=${isPlaying ? 1 : 0}&rel=0`}
           className="w-full h-full border-0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
         />
+
         {isPlaying && (
-          <div id="video-playback-indicator" className="absolute top-3 right-3 px-2.5 py-1 bg-red-600/90 text-white text-xs font-mono font-semibold rounded-full flex items-center gap-1.5 shadow-lg backdrop-blur-sm animate-pulse">
+          <div id="video-playback-indicator" className="absolute top-3 right-3 px-2.5 py-1 bg-red-600/90 text-white text-xs font-mono font-semibold rounded-full flex items-center gap-1.5 shadow-lg backdrop-blur-sm animate-pulse z-10">
             <span className="w-2 h-2 rounded-full bg-white" />
             <span>RECORDING REACTION • {formatSeconds(playbackSeconds)}</span>
           </div>
         )}
+      </div>
+
+      {/* Video Session Quick Control */}
+      <div className="flex items-center justify-between gap-3 bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+        <div className="flex items-center gap-2 text-xs text-slate-300">
+          <span className={`w-2.5 h-2.5 rounded-full ${isPlaying ? 'bg-red-500 animate-pulse' : 'bg-slate-600'}`} />
+          <span className="font-medium">
+            {isPlaying ? 'Watching Session Active (Taking Photos)' : 'Video Standby'}
+          </span>
+        </div>
+        <button
+          id="video-player-toggle-btn"
+          type="button"
+          onClick={togglePlayback}
+          className={`px-3.5 py-2 rounded-lg font-medium text-xs transition-all flex items-center gap-2 shadow-md ${
+            isPlaying
+              ? 'bg-red-600 hover:bg-red-500 text-white shadow-red-600/20'
+              : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-indigo-600/20'
+          }`}
+        >
+          <span>{isPlaying ? '⏸ Pause Video & Session' : '▶ Play Video & Start Watching Session'}</span>
+        </button>
       </div>
 
       {/* Video Metadata Panel */}

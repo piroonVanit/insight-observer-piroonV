@@ -1,0 +1,6 @@
+{
+  "name": "Insight Observer",
+  "description": "Multimodal AI application that observes viewer facial reactions during YouTube video watching, conducts interactive interviews, and generates sentiment synthesis reports.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,55 @@
+System Model: gpt-5.6-luna
+
+System Instruction:
+You are an expert AI Sentiment Analyst and Interview Synthesizer. Your goal is to write a comprehensive, well-structured Final Sentiment & Insight Synthesis Report evaluating a user's emotional experience while watching a video and participating in a follow-up interview.
+
+Input Data Provided:
+
+=== YOUTUBE VIDEO METADATA ===
+Title: The Odyssey - Official Trailer
+Duration: 135 seconds
+Description: Experience the epic journey of Odysseus as he battles mythic beasts and navigates treacherous seas to return home. Watch the official trailer for The Odyssey.
+Transcript:
+[0:00] For ten long years, Troy has fallen. But the hardest war is the one to reach home.
+[0:25] Poseidon's wrath unleashes the storm!
+[0:50] No mortal can escape the Sirens' call...
+[1:15] Stand firm, my brothers, Ithaca awaits!
+[1:45] Coming soon to theaters.
+
+=== VISUAL EVALUATION (WEBCAM REACTION ANALYSIS) ===
+Timestamp Analysis:
+- [00:05] Neutral / Attentive
+- [00:12] Slight Smile / Curiosity
+- [00:18] Focused / Neutral
+- [00:25] Widened Eyes / Surprised (Poseidon storm sequence)
+- [00:32] Raised Eyebrows / Intrigued
+- [00:40] Focused / Tense
+- [00:50] Subtle Smile
+- [00:58] Frown / Concerned
+- [00:65] Neutral / Immersed
+- [00:72] Gasp / Wide Eyes (Sirens reveal)
+- [00:80] Slight Smile
+- [00:88] Focused / Intent
+- [00:95] Smirk / Excited
+- [01:05] Tense Mouth / Anticipation
+- [01:12] Bright Smile / Nodding (Heroic battle cry)
+- [01:20] Wide Smile / Delighted (Title reveal)
+- [01:28] Neutral / Satisfied
+- [01:35] Smile
+
+Overall Visual Summary: High emotional engagement with peak positive valence at 00:25, 00:72, and 01:12 - 01:20.
+
+=== INTERVIEW CHAT HISTORY ===
+Interviewer: Hi there! I've been observing your reactions while watching "The Odyssey - Official Trailer". I noticed you had a huge smile and widened eyes around 00:25 when Poseidon unleashed the storm, and again at 01:12 during the battle cry. What specifically excited you about those moments?
+User: The visual effects for Poseidon's wave were insane! I love epic myth stories, and the orchestral music during the battle scene got me really hyped up for the movie.
+Interviewer: That makes total sense! The CGI and score definitely set a grand tone. On the flip side, I saw your expression get a bit tense and focused around 00:58. Was there anything in that segment or overall trailer that you felt didn't work as well or made you skeptical?
+User: Around 00:58 the lighting got super dark, so it was a bit hard to see what was happening in the monster fight. But overall, I thought it was a fantastic trailer!
+Interviewer: Thanks for sharing that feedback! Darkness in fight scenes can definitely hinder visibility. Overall, would you say you're eager to watch this in theaters when it comes out?
+User: Absolutely, 100%! I'm definitely buying a ticket on opening night.
+
+=== TASK ===
+Synthesize the user's total reaction into a final written sentiment report. Structure your report into clear sections:
+1. Executive Summary
+2. Visual Reaction Analysis & Key Emotional Triggers
+3. Qualitative User Interview Insights
+4. Overall Sentiment Score & Recommendations

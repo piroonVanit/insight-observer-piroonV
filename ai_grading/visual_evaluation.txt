@@ -1,0 +1,27 @@
+Visual Evaluation Report
+Model: gpt-5.6-luna
+Video: The Odyssey - Official Trailer (Duration: 135s)
+Total Frame Samples Analyzed: 20
+
+Timestamp Analysis:
+- [00:05] Neutral / Attentive (Baseline focus as trailer title cards begin)
+- [00:12] Slight Smile / Curiosity (Viewer lights up as Odysseus appears on screen)
+- [00:18] Focused / Neutral (Attentive listening during opening monologue)
+- [00:25] Widened Eyes / Surprised (Viewer reacts with amazement at the Poseidon sea monster effect)
+- [00:32] Raised Eyebrows / Intrigued (Watching ship storm chaos)
+- [00:40] Focused / Tense (Slight narrowing of eyes during naval battle)
+- [00:50] Subtle Smile (Amusement at comic beat / mythical creature encounter)
+- [00:58] Frown / Concerned (Viewer shifts posture as crew faces peril)
+- [00:65] Neutral / Immersed (Steady focus on dialogue)
+- [00:72] Gasp / Wide Eyes (Shocked reaction at Sirens jump reveal)
+- [00:80] Slight Smile (Viewer nods in appreciation of visual cinematic composition)
+- [00:88] Focused / Intent (Engaged with battle music build-up)
+- [00:95] Smirk / Excited (Appreciation of heroic action sequence)
+- [01:05] Tense Mouth / Anticipation (Climactic clash scene)
+- [01:12] Bright Smile / Nodding (Strong positive approval at battle cry)
+- [01:20] Wide Smile / Delighted (Enthusiastic reaction to title reveal sequence)
+- [01:28] Neutral / Satisfied (Relaxed posture as trailer concludes)
+- [01:35] Smile (Overall pleased impression as title screen fade finishes)
+
+Overall Visual Summary:
+The viewer demonstrated high emotional engagement throughout the 135-second trailer. Key peaks of emotional valence occurred during the CGI creature action sequences (00:25, 00:72) and the heroic climax (01:12 - 01:20), marked by smiles, widened eyes, and nodding.
